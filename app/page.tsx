@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import { calculateSIP } from '@/lib/sipCalculations';
 
 export default function UltimateSIPCalculator() {
   // --- STATE MANAGEMENT ---
@@ -14,69 +15,10 @@ export default function UltimateSIPCalculator() {
   const [taxRate, setTaxRate] = useState(10); // LTCG Tax %
 
   // --- CALCULATION ENGINE ---
-  const results = useMemo(() => {
-    // 1. Calculate Future Value with Step-Up
-    let totalInvested = 0;
-    let futureValue = 0;
-    let currentSIP = investment;
-    
-    const monthlyRate = rate / 12 / 100;
-    const totalMonths = years * 12;
-    
-    // If Step-Up is 0, use standard formula for speed
-    if (stepUp === 0) {
-      totalInvested = investment * totalMonths;
-      if (monthlyRate === 0) {
-        futureValue = totalInvested;
-      } else {
-        futureValue = investment * (((Math.pow(1 + monthlyRate, totalMonths) - 1) / monthlyRate) * (1 + monthlyRate));
-      }
-    } else {
-      // Year-wise calculation for Step-Up
-      let currentYearValue = 0;
-      let monthsRemaining = totalMonths;
-      
-      for (let y = 0; y < years; y++) {
-        const monthsInYear = 12;
-        // FV for this specific year's SIPs
-        // Formula: P * [ ((1+r)^n - 1) / r ] * (1+r)
-        // But we need to compound this year's block for the remaining years
-        
-        const sipForYear = investment * Math.pow(1 + stepUp / 100, y);
-        totalInvested += sipForYear * 12;
-        
-        // Compound this year's contributions for the remaining time
-        const monthsLeftAfterYear = totalMonths - (y * 12);
-        
-        if (monthlyRate === 0) {
-             futureValue += sipForYear * 12;
-        } else {
-             // Calculate FV of an annuity for 12 months, then compound it for remaining years
-             const fvAnnuity = sipForYear * (((Math.pow(1 + monthlyRate, 12) - 1) / monthlyRate) * (1 + monthlyRate));
-             futureValue += fvAnnuity * Math.pow(1 + monthlyRate, monthsLeftAfterYear - 12);
-        }
-      }
-    }
-
-    // 2. Derived Metrics
-    const wealthGained = Math.round(futureValue - totalInvested);
-    const realValue = Math.round(futureValue / Math.pow(1 + inflation / 100, years));
-    const estimatedTax = Math.round(wealthGained * (taxRate / 100)); // Simplified
-    const postTaxValue = Math.round(futureValue - estimatedTax);
-    
-    // 3. Goal Progress
-    const goalProgress = Math.min(100, (futureValue / goal) * 100);
-
-    return {
-      futureValue: Math.round(futureValue),
-      totalInvested: Math.round(totalInvested),
-      wealthGained,
-      realValue,
-      estimatedTax,
-      postTaxValue,
-      goalProgress
-    };
-  }, [investment, rate, years, stepUp, inflation, goal, taxRate]);
+  const results = useMemo(
+    () => calculateSIP({ investment, rate, years, stepUp, inflation, goal, taxRate }),
+    [investment, rate, years, stepUp, inflation, goal, taxRate]
+  );
 
   // --- CHART DATA ---
   const pieData = [
@@ -247,7 +189,7 @@ export default function UltimateSIPCalculator() {
               <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
-                  <p className="text-xs text-slate-500 uppercase font-bold">Real Value (Today's Money)</p>
+                  <p className="text-xs text-slate-500 uppercase font-bold">Real Value (Today&apos;s Money)</p>
                 </div>
                 <p className="text-2xl font-bold text-slate-700">{formatCurrency(results.realValue)}</p>
                 <p className="text-xs text-slate-400 mt-1">Adjusted for {inflation}% inflation</p>
