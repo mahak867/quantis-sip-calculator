@@ -2,11 +2,17 @@
 
 A clean, fast **Systematic Investment Plan (SIP) calculator** built with Next.js 15, React 19, TypeScript, and Tailwind CSS. Helps investors estimate returns on monthly SIP contributions over time.
 
+**[🚀 Live Demo](https://quantis-sip-calculator.vercel.app)**
+
+![Quantis SIP Calculator screenshot](public/screenshot.png)
+
 ---
 
 ## Features
 
 - Calculate estimated returns for a given monthly investment, expected annual return, and duration
+- Annual step-up SIP, inflation adjustment, LTCG tax estimate, and goal-progress tracking
+- Input validation with clear per-field error messages
 - Instant, client-side computation — no server calls needed
 - Responsive UI styled with Tailwind CSS
 - Built on the latest Next.js App Router (v15)
@@ -21,6 +27,8 @@ A clean, fast **Systematic Investment Plan (SIP) calculator** built with Next.js
 | Language   | TypeScript 5                      |
 | UI Library | React 19                          |
 | Styling    | Tailwind CSS 3                    |
+| Charts     | Recharts 2                        |
+| Testing    | Jest 29 + ts-jest                 |
 | Linting    | ESLint 9 + eslint-config-next     |
 
 ---
@@ -51,6 +59,12 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
+### Running Tests
+
+```bash
+npm test
+```
+
 ### Building for Production
 
 ```bash
@@ -79,9 +93,11 @@ cp .env.example .env.local
 ```
 quantis-sip-calculator/
 ├── app/                  # Next.js App Router pages & components
-├── public/               # Static assets
+├── lib/                  # Calculation logic & validation (sipCalculations.ts)
+├── public/               # Static assets (screenshot, icons)
 ├── .gitignore
 ├── eslint.config.mjs
+├── jest.config.js
 ├── next.config.ts
 ├── package.json
 ├── postcss.config.mjs
