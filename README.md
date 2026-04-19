@@ -2,9 +2,13 @@
 
 A clean, fast **Systematic Investment Plan (SIP) calculator** built with Next.js 15, React 19, TypeScript, and Tailwind CSS. Helps investors estimate returns on monthly SIP contributions over time.
 
+[![CI](https://github.com/mahak867/quantis-sip-calculator/actions/workflows/ci.yml/badge.svg)](https://github.com/mahak867/quantis-sip-calculator/actions/workflows/ci.yml)
+[![Tests](https://img.shields.io/badge/tests-35%20passed-brightgreen)](#running-tests)
+[![License](https://img.shields.io/badge/license-open%20source-blue)](#license)
+
 **[🚀 Live Demo](https://quantis-sip-calculator.vercel.app)**
 
-![Quantis SIP Calculator screenshot](public/screenshot.png)
+![Quantis SIP Calculator screenshot](https://raw.githubusercontent.com/mahak867/quantis-sip-calculator/main/public/screenshot.png)
 
 ---
 

@@ -1,5 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
+import ErrorBoundary from "./ErrorBoundary";
 
 export const metadata: Metadata = {
   title: "Quantis — Advanced SIP Calculator",
@@ -18,7 +19,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className="antialiased">{children}</body>
+      <body className="antialiased"><ErrorBoundary>{children}</ErrorBoundary></body>
     </html>
   );
 }
