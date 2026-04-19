@@ -54,31 +54,34 @@ export default function UltimateSIPCalculator() {
             {/* Core Inputs Card */}
             <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 space-y-5">
               <div>
-                <label className="flex justify-between text-xs font-semibold text-slate-500 mb-1">
+                <label htmlFor="investment" className="flex justify-between text-xs font-semibold text-slate-500 mb-1">
                   <span>Monthly Investment</span>
                   <span className="text-[#224c87] font-bold">{formatCurrency(investment)}</span>
                 </label>
-                <input type="range" min="500" max="100000" step="500" value={investment} 
+                <input id="investment" type="range" min="500" max="100000" step="500" value={investment}
+                  aria-label={`Monthly investment: ${formatCurrency(investment)}`}
                   onChange={(e) => setInvestment(Number(e.target.value))}
                   className="w-full h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#224c87]" />
               </div>
 
               <div>
-                <label className="flex justify-between text-xs font-semibold text-slate-500 mb-1">
+                <label htmlFor="rate" className="flex justify-between text-xs font-semibold text-slate-500 mb-1">
                   <span>Expected Return (p.a.)</span>
                   <span className="text-[#224c87] font-bold">{rate}%</span>
                 </label>
-                <input type="range" min="1" max="30" step="0.5" value={rate} 
+                <input id="rate" type="range" min="1" max="30" step="0.5" value={rate}
+                  aria-label={`Expected annual return: ${rate}%`}
                   onChange={(e) => setRate(Number(e.target.value))}
                   className="w-full h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#224c87]" />
               </div>
 
               <div>
-                <label className="flex justify-between text-xs font-semibold text-slate-500 mb-1">
+                <label htmlFor="years" className="flex justify-between text-xs font-semibold text-slate-500 mb-1">
                   <span>Duration</span>
                   <span className="text-[#224c87] font-bold">{years} Yrs</span>
                 </label>
-                <input type="range" min="1" max="40" value={years} 
+                <input id="years" type="range" min="1" max="40" value={years}
+                  aria-label={`Investment duration: ${years} years`}
                   onChange={(e) => setYears(Number(e.target.value))}
                   className="w-full h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#224c87]" />
               </div>
@@ -89,42 +92,46 @@ export default function UltimateSIPCalculator() {
               <h3 className="font-bold text-slate-800 text-sm">Advanced Assumptions</h3>
               
               <div>
-                <label className="flex justify-between text-xs font-semibold text-slate-500 mb-1">
+                <label htmlFor="stepUp" className="flex justify-between text-xs font-semibold text-slate-500 mb-1">
                   <span>Annual Step-Up</span>
                   <span className="text-[#da3832] font-bold">{stepUp}%</span>
                 </label>
-                <input type="range" min="0" max="20" value={stepUp} 
+                <input id="stepUp" type="range" min="0" max="20" value={stepUp}
+                  aria-label={`Annual step-up: ${stepUp}%`}
                   onChange={(e) => setStepUp(Number(e.target.value))}
                   className="w-full h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#da3832]" />
                 <p className="text-[10px] text-slate-400 mt-1">Increase SIP every year</p>
               </div>
 
               <div>
-                <label className="flex justify-between text-xs font-semibold text-slate-500 mb-1">
+                <label htmlFor="inflation" className="flex justify-between text-xs font-semibold text-slate-500 mb-1">
                   <span>Inflation Rate</span>
                   <span className="text-slate-600 font-bold">{inflation}%</span>
                 </label>
-                <input type="range" min="0" max="15" step="0.5" value={inflation} 
+                <input id="inflation" type="range" min="0" max="15" step="0.5" value={inflation}
+                  aria-label={`Inflation rate: ${inflation}%`}
                   onChange={(e) => setInflation(Number(e.target.value))}
                   className="w-full h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-slate-400" />
               </div>
 
               <div>
-                <label className="flex justify-between text-xs font-semibold text-slate-500 mb-1">
+                <label htmlFor="taxRate" className="flex justify-between text-xs font-semibold text-slate-500 mb-1">
                   <span>Tax Rate (LTCG)</span>
                   <span className="text-slate-600 font-bold">{taxRate}%</span>
                 </label>
-                <input type="range" min="0" max="30" value={taxRate} 
+                <input id="taxRate" type="range" min="0" max="30" value={taxRate}
+                  aria-label={`LTCG tax rate: ${taxRate}%`}
                   onChange={(e) => setTaxRate(Number(e.target.value))}
                   className="w-full h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-slate-400" />
               </div>
               
               <div>
-                <label className="flex justify-between text-xs font-semibold text-slate-500 mb-1">
+                <label htmlFor="goal" className="flex justify-between text-xs font-semibold text-slate-500 mb-1">
                   <span>Target Goal</span>
                   <span className="text-slate-600 font-bold">{formatCurrency(goal)}</span>
                 </label>
-                <input type="range" min="100000" max={100000000} step="100000" value={goal} 
+                <input id="goal" type="range" min="100000" max={100000000} step="100000" value={goal}
+                  aria-label={`Target goal: ${formatCurrency(goal)}`}
                   onChange={(e) => setGoal(Number(e.target.value))}
                   className="w-full h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-slate-400" />
               </div>

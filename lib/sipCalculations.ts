@@ -8,6 +8,49 @@ export interface SIPInputs {
   taxRate: number;     // LTCG tax rate (%)
 }
 
+export interface ValidationError {
+  field: keyof SIPInputs;
+  message: string;
+}
+
+/**
+ * Validates SIP inputs and returns an array of validation errors.
+ * Returns an empty array when all inputs are valid.
+ */
+export function validateSIPInputs(inputs: SIPInputs): ValidationError[] {
+  const errors: ValidationError[] = [];
+
+  if (!Number.isFinite(inputs.investment) || inputs.investment <= 0) {
+    errors.push({ field: 'investment', message: 'Monthly investment must be greater than 0.' });
+  }
+
+  if (!Number.isFinite(inputs.rate) || inputs.rate < 0) {
+    errors.push({ field: 'rate', message: 'Expected return rate must be 0 or greater.' });
+  }
+
+  if (!Number.isFinite(inputs.years) || !Number.isInteger(inputs.years) || inputs.years < 1) {
+    errors.push({ field: 'years', message: 'Investment duration must be a whole number of at least 1 year.' });
+  }
+
+  if (!Number.isFinite(inputs.stepUp) || inputs.stepUp < 0) {
+    errors.push({ field: 'stepUp', message: 'Annual step-up must be 0 or greater.' });
+  }
+
+  if (!Number.isFinite(inputs.inflation) || inputs.inflation < 0) {
+    errors.push({ field: 'inflation', message: 'Inflation rate must be 0 or greater.' });
+  }
+
+  if (!Number.isFinite(inputs.goal) || inputs.goal <= 0) {
+    errors.push({ field: 'goal', message: 'Target goal must be greater than 0.' });
+  }
+
+  if (!Number.isFinite(inputs.taxRate) || inputs.taxRate < 0 || inputs.taxRate > 100) {
+    errors.push({ field: 'taxRate', message: 'Tax rate must be between 0 and 100.' });
+  }
+
+  return errors;
+}
+
 export interface SIPResults {
   futureValue: number;
   totalInvested: number;
@@ -19,6 +62,11 @@ export interface SIPResults {
 }
 
 export function calculateSIP(inputs: SIPInputs): SIPResults {
+  const errors = validateSIPInputs(inputs);
+  if (errors.length > 0) {
+    throw new Error(errors.map((e) => e.message).join(' '));
+  }
+
   const { investment, rate, years, stepUp, inflation, goal, taxRate } = inputs;
 
   const monthlyRate = rate / 12 / 100;

@@ -1,4 +1,4 @@
-import { calculateSIP, SIPInputs } from './sipCalculations';
+import { calculateSIP, validateSIPInputs, SIPInputs } from './sipCalculations';
 
 const baseInputs: SIPInputs = {
   investment: 25000,
@@ -108,6 +108,102 @@ describe('calculateSIP', () => {
     it('step-up totalInvested for 1 year equals investment * 12', () => {
       const result = calculateSIP({ ...baseInputs, years: 1, stepUp: 10 });
       expect(result.totalInvested).toBe(25000 * 12);
+    });
+  });
+
+  describe('validateSIPInputs', () => {
+    it('returns no errors for valid base inputs', () => {
+      expect(validateSIPInputs(baseInputs)).toHaveLength(0);
+    });
+
+    it('returns error when investment is zero', () => {
+      const errors = validateSIPInputs({ ...baseInputs, investment: 0 });
+      expect(errors.some((e) => e.field === 'investment')).toBe(true);
+    });
+
+    it('returns error when investment is negative', () => {
+      const errors = validateSIPInputs({ ...baseInputs, investment: -1000 });
+      expect(errors.some((e) => e.field === 'investment')).toBe(true);
+    });
+
+    it('returns error when investment is NaN', () => {
+      const errors = validateSIPInputs({ ...baseInputs, investment: NaN });
+      expect(errors.some((e) => e.field === 'investment')).toBe(true);
+    });
+
+    it('returns error when rate is negative', () => {
+      const errors = validateSIPInputs({ ...baseInputs, rate: -1 });
+      expect(errors.some((e) => e.field === 'rate')).toBe(true);
+    });
+
+    it('accepts zero rate', () => {
+      const errors = validateSIPInputs({ ...baseInputs, rate: 0 });
+      expect(errors.some((e) => e.field === 'rate')).toBe(false);
+    });
+
+    it('returns error when years is zero', () => {
+      const errors = validateSIPInputs({ ...baseInputs, years: 0 });
+      expect(errors.some((e) => e.field === 'years')).toBe(true);
+    });
+
+    it('returns error when years is a fraction', () => {
+      const errors = validateSIPInputs({ ...baseInputs, years: 1.5 });
+      expect(errors.some((e) => e.field === 'years')).toBe(true);
+    });
+
+    it('returns error when stepUp is negative', () => {
+      const errors = validateSIPInputs({ ...baseInputs, stepUp: -5 });
+      expect(errors.some((e) => e.field === 'stepUp')).toBe(true);
+    });
+
+    it('returns error when inflation is negative', () => {
+      const errors = validateSIPInputs({ ...baseInputs, inflation: -1 });
+      expect(errors.some((e) => e.field === 'inflation')).toBe(true);
+    });
+
+    it('returns error when goal is zero', () => {
+      const errors = validateSIPInputs({ ...baseInputs, goal: 0 });
+      expect(errors.some((e) => e.field === 'goal')).toBe(true);
+    });
+
+    it('returns error when taxRate is negative', () => {
+      const errors = validateSIPInputs({ ...baseInputs, taxRate: -1 });
+      expect(errors.some((e) => e.field === 'taxRate')).toBe(true);
+    });
+
+    it('returns error when taxRate exceeds 100', () => {
+      const errors = validateSIPInputs({ ...baseInputs, taxRate: 101 });
+      expect(errors.some((e) => e.field === 'taxRate')).toBe(true);
+    });
+
+    it('accepts taxRate of exactly 100', () => {
+      const errors = validateSIPInputs({ ...baseInputs, taxRate: 100 });
+      expect(errors.some((e) => e.field === 'taxRate')).toBe(false);
+    });
+
+    it('returns multiple errors for multiple invalid fields', () => {
+      const errors = validateSIPInputs({ ...baseInputs, investment: -1, years: 0 });
+      expect(errors.length).toBeGreaterThanOrEqual(2);
+    });
+  });
+
+  describe('calculateSIP input validation', () => {
+    it('throws when investment is zero', () => {
+      expect(() => calculateSIP({ ...baseInputs, investment: 0 })).toThrow();
+    });
+
+    it('throws when years is less than 1', () => {
+      expect(() => calculateSIP({ ...baseInputs, years: 0 })).toThrow();
+    });
+
+    it('throws when taxRate exceeds 100', () => {
+      expect(() => calculateSIP({ ...baseInputs, taxRate: 150 })).toThrow();
+    });
+
+    it('does not throw for all-valid boundary values', () => {
+      expect(() =>
+        calculateSIP({ investment: 1, rate: 0, years: 1, stepUp: 0, inflation: 0, goal: 1, taxRate: 0 })
+      ).not.toThrow();
     });
   });
 });
